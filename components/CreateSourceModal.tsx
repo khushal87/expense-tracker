@@ -1,0 +1,113 @@
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import IconButton from "@mui/material/IconButton";
+import Modal from "@mui/material/Modal";
+import Snackbar from "@mui/material/Snackbar";
+import TextField from "@mui/material/TextField";
+import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
+
+type CreateSourceModalType = {
+    source: "Income" | "Expense" | "Investment";
+    isCreateSourceModalVisible: boolean;
+    setIsCreateSourceModalVisible: React.Dispatch<
+        React.SetStateAction<boolean>
+    >;
+};
+
+export const CreateSourceModal = ({
+    source,
+    isCreateSourceModalVisible,
+    setIsCreateSourceModalVisible,
+}: CreateSourceModalType) => {
+    const [isSourceCreated, setIsSourceCreated] = useState<boolean>(false);
+    const [name, setName] = useState<string>("");
+    const cardHeaderTitle =
+        source === "Income"
+            ? "Create Payor"
+            : source === "Expense"
+            ? "Create Payee"
+            : "Create Investment Source";
+    const cardHeaderSubHeader =
+        source === "Income"
+            ? "Create the source from whom you will receive the payment."
+            : source === "Expense"
+            ? "Create the source to whom you have spent your money."
+            : "Create the source to whom you have invested your money.";
+
+    const createSource = async () => {
+        await fetch("http://localhost:3000/api/source/create", {
+            method: "POST",
+            body: JSON.stringify({ name, type: source }),
+        })
+            .then((response) => {
+                setIsCreateSourceModalVisible(false);
+                setIsSourceCreated(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    return (
+        <>
+            <Modal
+                open={isCreateSourceModalVisible}
+                onClose={() => setIsCreateSourceModalVisible(false)}
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Card
+                    style={{
+                        width: 400,
+                    }}
+                >
+                    <CardHeader
+                        title={cardHeaderTitle}
+                        subheader={cardHeaderSubHeader}
+                        subheaderTypographyProps={{ style: { fontSize: 14 } }}
+                        action={
+                            <IconButton
+                                onClick={() =>
+                                    setIsCreateSourceModalVisible(false)
+                                }
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        }
+                    />
+                    <CardContent>
+                        <TextField
+                            required
+                            id={`${source.toLowerCase()}-source-name`}
+                            label="Name"
+                            size="medium"
+                            fullWidth
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                        />
+                    </CardContent>
+                    <CardActions>
+                        <Button onClick={createSource}>
+                            Create {source} source
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Modal>
+            <Snackbar
+                open={isSourceCreated}
+                autoHideDuration={3000}
+                onClose={() => setIsSourceCreated(false)}
+            >
+                <Alert severity="success">{`${source} source created successfully!`}</Alert>
+            </Snackbar>
+        </>
+    );
+};
