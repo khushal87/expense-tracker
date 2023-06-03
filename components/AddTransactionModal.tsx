@@ -44,7 +44,7 @@ export const AddTransactionModal = ({
         useState<boolean>(false);
 
     const createTransaction = async () => {
-        await fetch("http://localhost:3000/api/transaction/create", {
+        await fetch("http://127.0.0.1:3000/api/transaction/create", {
             method: "POST",
             body: JSON.stringify({
                 sourceId: selectedSource?.id,
@@ -76,7 +76,7 @@ export const AddTransactionModal = ({
     useEffect(() => {
         const getSourcesByType = async () => {
             const response = await fetch(
-                `http://localhost:3000/api/source/get/${source}`,
+                `http://127.0.0.1:3000/api/source/get/${source}`,
                 {}
             );
             const data = await response.json();

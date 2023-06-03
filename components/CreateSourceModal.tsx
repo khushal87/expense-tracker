@@ -41,7 +41,7 @@ export const CreateSourceModal = ({
             : "Create the source to whom you have invested your money.";
 
     const createSource = async () => {
-        await fetch("http://localhost:3000/api/source/create", {
+        await fetch("http://127.0.0.1:3000/api/source/create", {
             method: "POST",
             body: JSON.stringify({ name, type: source }),
         })

@@ -31,7 +31,7 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
 
     const onMonthChangeHandler = async (month: number, year: number) => {
         const response = await fetch(
-            `http://localhost:3000/api/transaction/get/${month}/${year}`,
+            `http://127.0.0.1:3000/api/transaction/get/${month}/${year}`,
             {}
         );
         const data = await response.json();
@@ -129,7 +129,7 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
 export async function getServerSideProps() {
     const currentDate = new Date();
     const response = await fetch(
-        `http://localhost:3000/api/transaction/get/${
+        `http://127.0.0.1:3000/api/transaction/get/${
             currentDate.getMonth() + 1
         }/${currentDate.getFullYear()}`,
         {}
