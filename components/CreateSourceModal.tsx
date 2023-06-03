@@ -10,9 +10,10 @@ import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import { TransactionType } from "@/types";
 
 type CreateSourceModalType = {
-    source: "Income" | "Expense" | "Investment";
+    source: TransactionType;
     isCreateSourceModalVisible: boolean;
     setIsCreateSourceModalVisible: React.Dispatch<
         React.SetStateAction<boolean>
@@ -27,15 +28,15 @@ export const CreateSourceModal = ({
     const [isSourceCreated, setIsSourceCreated] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
     const cardHeaderTitle =
-        source === "Income"
+        source === TransactionType.income
             ? "Create Payor"
-            : source === "Expense"
+            : source === TransactionType.expense
             ? "Create Payee"
             : "Create Investment Source";
     const cardHeaderSubHeader =
-        source === "Income"
+        source === TransactionType.income
             ? "Create the source from whom you will receive the payment."
-            : source === "Expense"
+            : source === TransactionType.expense
             ? "Create the source to whom you have spent your money."
             : "Create the source to whom you have invested your money.";
 
@@ -47,6 +48,7 @@ export const CreateSourceModal = ({
             .then((response) => {
                 setIsCreateSourceModalVisible(false);
                 setIsSourceCreated(true);
+                setName("");
             })
             .catch((error) => {
                 console.log(error);

@@ -12,10 +12,18 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CloseIcon from "@mui/icons-material/Close";
+import { CardActions } from "@mui/material";
 
-export const AppHeader = () => {
+type AppHeaderType = {
+    onMonthChangeHandler: (month: number, year: number) => Promise<void>;
+};
+
+export const AppHeader = ({ onMonthChangeHandler }: AppHeaderType) => {
     const [isMonthModalVisible, setIsMonthModalVisible] =
         useState<boolean>(false);
+    const [month, setMonth] = useState<number>(0);
+    const [year, setYear] = useState<number>(0);
+
     return (
         <AppBar component={"nav"}>
             <Toolbar>
@@ -58,9 +66,26 @@ export const AppHeader = () => {
                             <DatePicker
                                 views={["month", "year"]}
                                 disableFuture
+                                defaultValue={dayjs(new Date())}
+                                onChange={(value) => {
+                                    if (value) {
+                                        setMonth(value?.month() + 1);
+                                        setYear(value?.year());
+                                    }
+                                }}
                             />
                         </LocalizationProvider>
                     </CardContent>
+                    <CardActions>
+                        <Button
+                            onClick={() => {
+                                onMonthChangeHandler(month, year);
+                                setIsMonthModalVisible(false);
+                            }}
+                        >
+                            Confirm
+                        </Button>
+                    </CardActions>
                 </Card>
             </Modal>
         </AppBar>

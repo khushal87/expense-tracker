@@ -1,6 +1,5 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { Source, Transaction } from "@prisma/client";
 import { IncomeTable } from "@/components/IncomeTable";
 import { ExpenseTable } from "@/components/ExpenseTable";
 import { InvestmentTable } from "@/components/InvestmentTable";
@@ -11,27 +10,51 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { AppHeader } from "@/components/AppHeader";
+import { TransactionDataType, TransactionType } from "@/types";
 
-export type TransactionType = Transaction & {
-    source: Source;
-};
-
-export default function Home(props: { transactions: TransactionType[] }) {
-    const [incomes, setIncomes] = useState<TransactionType[]>(
+export default function Home(props: { transactions: TransactionDataType[] }) {
+    const [incomes, setIncomes] = useState<TransactionDataType[]>(
         props.transactions.filter(
             (transaction) => transaction.source.type === "Income"
         )
     );
-    const [expenses, setExpenses] = useState<TransactionType[]>(
+    const [expenses, setExpenses] = useState<TransactionDataType[]>(
         props.transactions.filter(
             (transaction) => transaction.source.type === "Expense"
         )
     );
-    const [investments, setInvestments] = useState<TransactionType[]>(
+    const [investments, setInvestments] = useState<TransactionDataType[]>(
         props.transactions.filter(
             (transaction) => transaction.source.type === "Investment"
         )
     );
+
+    const onMonthChangeHandler = async (month: number, year: number) => {
+        const response = await fetch(
+            `http://localhost:3000/api/transaction/get/${month}/${year}`,
+            {}
+        );
+        const data = await response.json();
+        setIncomes(
+            data.filter(
+                (transaction: TransactionDataType) =>
+                    transaction.source.type === TransactionType.income
+            )
+        );
+        setExpenses(
+            data.filter(
+                (transaction: TransactionDataType) =>
+                    transaction.source.type === TransactionType.expense
+            )
+        );
+        setInvestments(
+            data.filter(
+                (transaction: TransactionDataType) =>
+                    transaction.source.type === TransactionType.investment
+            )
+        );
+    };
+
     return (
         <>
             <Head>
@@ -48,7 +71,7 @@ export default function Home(props: { transactions: TransactionType[] }) {
             </Head>
             <main className={`${styles.main}`}>
                 <Container>
-                    <AppHeader />
+                    <AppHeader onMonthChangeHandler={onMonthChangeHandler} />
                     <Grid container py={10}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} lg={8} md={6}>
@@ -104,8 +127,11 @@ export default function Home(props: { transactions: TransactionType[] }) {
 }
 
 export async function getServerSideProps() {
+    const currentDate = new Date();
     const response = await fetch(
-        "http://localhost:3000/api/transaction/get",
+        `http://localhost:3000/api/transaction/get/${
+            currentDate.getMonth() + 1
+        }/${currentDate.getFullYear()}`,
         {}
     );
     const data = await response.json();

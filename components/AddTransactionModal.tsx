@@ -19,13 +19,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Source } from "@prisma/client";
-import { TransactionType } from "@/pages";
+import { TransactionType, TransactionDataType } from "@/types";
 
 type AddTransactionModalType = {
-    source: "Income" | "Expense" | "Investment";
+    source: TransactionType;
     isAddSourceModalVisible: boolean;
     setIsAddSourceModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-    addTransaction: (data: TransactionType) => void;
+    addTransaction: (data: TransactionDataType) => void;
 };
 
 export const AddTransactionModal = ({
@@ -55,6 +55,8 @@ export const AddTransactionModal = ({
             .then(async (response) => {
                 setIsAddSourceModalVisible(false);
                 setIsTransctionCreated(true);
+                setSelectedSource(null);
+                setAmount(0);
                 const newTransaction = await response.json();
                 addTransaction(newTransaction);
             })
@@ -64,9 +66,9 @@ export const AddTransactionModal = ({
     };
 
     const cardHeaderTitle =
-        source === "Income"
+        source === TransactionType.income
             ? "Add Income"
-            : source === "Expense"
+            : source === TransactionType.expense
             ? "Add Expense"
             : "Add Investment";
     const cardHeaderSubHeader = `Add your ${source} for a specific date of the month.`;
@@ -143,7 +145,7 @@ export const AddTransactionModal = ({
                             />
                         </LocalizationProvider>
                         <FormControl fullWidth style={{ marginTop: 20 }}>
-                            <InputLabel htmlFor="income-source-amount">
+                            <InputLabel htmlFor={`${source}-source-amount`}>
                                 Amount
                             </InputLabel>
                             <OutlinedInput

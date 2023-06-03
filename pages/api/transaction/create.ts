@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 
 const createTransaction = async (req: NextApiRequest, res: NextApiResponse) => {
     const data = req.body;
-    const parsedData = JSON.parse(data);
-    console.log(parsedData);
     try {
         const result = await prisma.transaction.create({
             data: {

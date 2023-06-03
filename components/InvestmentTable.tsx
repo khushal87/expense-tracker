@@ -10,12 +10,13 @@ import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 import { CreateSourceModal } from "./CreateSourceModal";
 import { AddTransactionModal } from "./AddTransactionModal";
-import { TransactionType } from "@/pages";
 import dayjs from "dayjs";
+import { TransactionDataType, TransactionType } from "@/types";
+import { CardContent, CardHeader, Paper } from "@mui/material";
 
 type InvestmentTableType = {
-    investments: TransactionType[];
-    setInvestments: React.Dispatch<React.SetStateAction<TransactionType[]>>;
+    investments: TransactionDataType[];
+    setInvestments: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
 };
 
 export const InvestmentTable = ({
@@ -29,38 +30,59 @@ export const InvestmentTable = ({
     const [isAddInvestmentModalVisible, setIsAddInvestmentModalVisible] =
         useState<boolean>(false);
 
-    const addInvestment = (data: TransactionType) => {
+    const addInvestment = (data: TransactionDataType) => {
         setInvestments((prevInvestments) => [...prevInvestments, data]);
     };
 
     return (
-        <TableContainer component={Card}>
-            <Table aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Source</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell align="right">Amount(₹)</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {investments.map((investment) => {
-                        return (
-                            <TableRow key={investment.id}>
-                                <TableCell>{investment.source.name}</TableCell>
-                                <TableCell>
-                                    {dayjs(investment.createdAt).format(
-                                        "DD-MM-YYYY"
-                                    )}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {investment.amount}
-                                </TableCell>
+        <Card>
+            <CardHeader
+                title={TransactionType.investment}
+                subheader={`Total - ${investments.reduce(
+                    (acc, investment) => acc + investment.amount,
+                    0
+                )}`}
+                subheaderTypographyProps={{
+                    style: {
+                        fontWeight: "bold",
+                    },
+                }}
+            />
+            <CardContent style={{ padding: 0 }}>
+                <TableContainer
+                    component={Paper}
+                    sx={{ maxHeight: 320, overflowY: "scroll" }}
+                >
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Source</TableCell>
+                                <TableCell>Date</TableCell>
+                                <TableCell align="right">Amount(₹)</TableCell>
                             </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
+                        </TableHead>
+                        <TableBody>
+                            {investments.map((investment) => {
+                                return (
+                                    <TableRow key={investment.id}>
+                                        <TableCell>
+                                            {investment.source.name}
+                                        </TableCell>
+                                        <TableCell>
+                                            {dayjs(investment.createdAt).format(
+                                                "DD-MM-YYYY"
+                                            )}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            {investment.amount}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </CardContent>
             <CardActions>
                 <Button
                     onClick={() =>
@@ -74,7 +96,7 @@ export const InvestmentTable = ({
                 </Button>
             </CardActions>
             <CreateSourceModal
-                source="Investment"
+                source={TransactionType.investment}
                 isCreateSourceModalVisible={
                     isCreateInvestmentSourceModalVisible
                 }
@@ -83,11 +105,11 @@ export const InvestmentTable = ({
                 }
             />
             <AddTransactionModal
-                source="Investment"
+                source={TransactionType.investment}
                 addTransaction={addInvestment}
                 isAddSourceModalVisible={isAddInvestmentModalVisible}
                 setIsAddSourceModalVisible={setIsAddInvestmentModalVisible}
             />
-        </TableContainer>
+        </Card>
     );
 };
