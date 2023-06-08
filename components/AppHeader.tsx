@@ -21,8 +21,9 @@ type AppHeaderType = {
 export const AppHeader = ({ onMonthChangeHandler }: AppHeaderType) => {
     const [isMonthModalVisible, setIsMonthModalVisible] =
         useState<boolean>(false);
-    const [month, setMonth] = useState<number>(0);
-    const [year, setYear] = useState<number>(0);
+    const currentDate = new Date();
+    const [month, setMonth] = useState<number>(currentDate.getMonth() + 1);
+    const [year, setYear] = useState<number>(currentDate.getFullYear());
 
     return (
         <AppBar component={"nav"}>
@@ -34,7 +35,7 @@ export const AppHeader = ({ onMonthChangeHandler }: AppHeaderType) => {
                     color="inherit"
                     onClick={() => setIsMonthModalVisible(true)}
                 >
-                    {dayjs(new Date()).format("MMM'YY")}
+                    {month + "/" + year}
                 </Button>
             </Toolbar>
             <Modal
@@ -66,7 +67,9 @@ export const AppHeader = ({ onMonthChangeHandler }: AppHeaderType) => {
                             <DatePicker
                                 views={["month", "year"]}
                                 disableFuture
-                                defaultValue={dayjs(new Date())}
+                                defaultValue={dayjs(`${year}-${month}`).startOf(
+                                    "month"
+                                )}
                                 onChange={(value) => {
                                     if (value) {
                                         setMonth(value?.month() + 1);
