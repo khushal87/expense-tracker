@@ -11,6 +11,8 @@ import dayjs from "dayjs";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { AppHeader } from "@/components/AppHeader";
 import { TransactionDataType, TransactionType } from "@/types";
+import { getTransactions } from "@/utils/getTransactions";
+import { PrismaClient } from "@prisma/client";
 
 export default function Home(props: { transactions: TransactionDataType[] }) {
     const [incomes, setIncomes] = useState<TransactionDataType[]>(
@@ -128,16 +130,16 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
 
 export async function getServerSideProps() {
     const currentDate = new Date();
-    const response = await fetch(
-        `${process.env.API_URL}/api/transaction/get/${
-            currentDate.getMonth() + 1
-        }/${currentDate.getFullYear()}`,
-        {}
+    const prisma = new PrismaClient();
+
+    const response = await getTransactions(
+        prisma,
+        currentDate.getMonth() + 1,
+        currentDate.getFullYear()
     );
-    const data = await response.json();
     return {
         props: {
-            transactions: data,
+            transactions: JSON.parse(JSON.stringify(response)),
         },
     };
 }
