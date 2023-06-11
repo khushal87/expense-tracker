@@ -13,6 +13,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { TransactionDataType, TransactionType } from "@/types";
 import { getTransactions } from "@/utils/getTransactions";
 import { PrismaClient } from "@prisma/client";
+import axios from "axios";
 
 export default function Home(props: { transactions: TransactionDataType[] }) {
     const [incomes, setIncomes] = useState<TransactionDataType[]>(
@@ -32,11 +33,10 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
     );
 
     const onMonthChangeHandler = async (month: number, year: number) => {
-        const response = await fetch(
-            `${process.env.API_URL}/api/transaction/get/${month}/${year}`,
-            {}
+        const response = await axios.get(
+            `${process.env.API_URL}/api/transaction/get/${month}/${year}`
         );
-        const data = await response.json();
+        const data = response.data;
         setIncomes(
             data.filter(
                 (transaction: TransactionDataType) =>

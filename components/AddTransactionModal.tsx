@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Source } from "@prisma/client";
 import { TransactionType, TransactionDataType } from "@/types";
+import axios from "axios";
 
 type AddTransactionModalType = {
     source: TransactionType;
@@ -44,25 +45,25 @@ export const AddTransactionModal = ({
         useState<boolean>(false);
 
     const createTransaction = async () => {
-        await fetch(`${process.env.API_URL}/api/transaction/create`, {
-            method: "POST",
-            body: JSON.stringify({
-                sourceId: selectedSource?.id,
-                amount,
-                createdAt: transactionDate,
-            }),
-        })
-            .then(async (response) => {
+        try {
+            const response = await axios.post(
+                `${process.env.API_URL}/api/transaction/create`,
+                {
+                    sourceId: selectedSource?.id,
+                    amount,
+                    createdAt: transactionDate,
+                }
+            );
+            if (response.status === 200) {
                 setIsAddSourceModalVisible(false);
                 setIsTransctionCreated(true);
                 setSelectedSource(null);
                 setAmount(0);
-                const newTransaction = await response.json();
-                addTransaction(newTransaction);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+                addTransaction(response.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const cardHeaderTitle =
@@ -75,11 +76,10 @@ export const AddTransactionModal = ({
 
     useEffect(() => {
         const getSourcesByType = async () => {
-            const response = await fetch(
-                `${process.env.API_URL}/api/source/get/${source}`,
-                {}
+            const response = await axios.get(
+                `${process.env.API_URL}/api/source/get/${source}`
             );
-            const data = await response.json();
+            const data = await response.data;
             setSources(data);
         };
         if (isAddSourceModalVisible) {

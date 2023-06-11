@@ -7,9 +7,7 @@ const createTransaction = async (req: NextApiRequest, res: NextApiResponse) => {
     const data = req.body;
     try {
         const result = await prisma.transaction.create({
-            data: {
-                ...JSON.parse(data),
-            },
+            data: data,
             include: {
                 source: true,
             },

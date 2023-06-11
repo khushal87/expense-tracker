@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { TransactionType } from "@/types";
+import axios from "axios";
 
 type CreateSourceModalType = {
     source: TransactionType;
@@ -41,18 +42,22 @@ export const CreateSourceModal = ({
             : "Create the source to whom you have invested your money.";
 
     const createSource = async () => {
-        await fetch(`${process.env.API_URL}/api/source/create`, {
-            method: "POST",
-            body: JSON.stringify({ name, type: source }),
-        })
-            .then((response) => {
+        try {
+            const response = await axios.post(
+                `${process.env.API_URL}/api/source/create`,
+                {
+                    name,
+                    type: source,
+                }
+            );
+            if (response.status === 200) {
                 setIsCreateSourceModalVisible(false);
                 setIsSourceCreated(true);
                 setName("");
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
