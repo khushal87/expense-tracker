@@ -1,19 +1,20 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { IncomeTable } from "@/components/IncomeTable";
-import { ExpenseTable } from "@/components/ExpenseTable";
-import { InvestmentTable } from "@/components/InvestmentTable";
+import {IncomeTable} from "@/components/IncomeTable";
+import {ExpenseTable} from "@/components/ExpenseTable";
+import {InvestmentTable} from "@/components/InvestmentTable";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import {useState} from "react";
 import dayjs from "dayjs";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { AppHeader } from "@/components/AppHeader";
-import { TransactionDataType, TransactionType } from "@/types";
-import { getTransactions } from "@/utils/getTransactions";
-import { PrismaClient } from "@prisma/client";
+import {AppHeader} from "@/components/AppHeader";
+import {TransactionDataType, TransactionType} from "@/types";
+import {getTransactions} from "@/utils/getTransactions";
+import {PrismaClient} from "@prisma/client";
 import axios from "axios";
+import {ExpensePieChart} from "@/components/ExpensePieChart";
 
 export default function Home(props: { transactions: TransactionDataType[] }) {
     const [incomes, setIncomes] = useState<TransactionDataType[]>(
@@ -61,19 +62,13 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
         <>
             <Head>
                 <title>Home</title>
-                <meta
-                    name="description"
-                    content="Home Page for the Expense Tracker"
-                />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1"
-                />
-                <link rel="icon" href="/favicon.ico" />
+                <meta name="description" content="Home Page for the Expense Tracker"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <link rel="icon" href="/favicon.ico"/>
             </Head>
             <main className={`${styles.main}`}>
                 <Container>
-                    <AppHeader onMonthChangeHandler={onMonthChangeHandler} />
+                    <AppHeader onMonthChangeHandler={onMonthChangeHandler}/>
                     <Grid container py={10}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} lg={8} md={6}>
@@ -81,8 +76,8 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
                                     Expense Tracker
                                 </Typography>
                                 <Typography color={"gray"} variant="h6">
-                                    This app is built for you to manage your
-                                    income and expenses with ease.
+                                    This app is built for you to manage your income and expenses
+                                    with ease.
                                 </Typography>
                             </Grid>
                             <Grid item xs={12} lg={4} md={6}>
@@ -94,25 +89,23 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <CalendarMonthIcon
-                                        style={{ marginRight: 10 }}
-                                    />
+                                    <CalendarMonthIcon style={{marginRight: 10}}/>
                                     {dayjs(new Date()).format("DD-MM-YYYY")}
+
                                 </Typography>
+                                <ExpensePieChart
+                                    totalIncome={incomes.reduce((acc, income) => acc + income.amount, 0)}
+                                    totalExpense={expenses.reduce((acc, expense) => acc + expense.amount, 0)}
+                                    totalInvestments={investments.reduce((acc, investment) => acc + investment.amount, 0)}
+                                />
                             </Grid>
                         </Grid>
                         <Grid container spacing={2} py={5}>
                             <Grid item xs={12} lg={4} md={6}>
-                                <IncomeTable
-                                    incomes={incomes}
-                                    setIncomes={setIncomes}
-                                />
+                                <IncomeTable incomes={incomes} setIncomes={setIncomes}/>
                             </Grid>
                             <Grid item xs={12} lg={4} md={6}>
-                                <ExpenseTable
-                                    expenses={expenses}
-                                    setExpenses={setExpenses}
-                                />
+                                <ExpenseTable expenses={expenses} setExpenses={setExpenses}/>
                             </Grid>
                             <Grid item xs={12} lg={4} md={6}>
                                 <InvestmentTable

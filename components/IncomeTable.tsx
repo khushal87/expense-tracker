@@ -57,7 +57,7 @@ export const IncomeTable = ({ incomes, setIncomes }: IncomeTableType) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {incomes.map((income) => {
+                            {incomes.filter(income=> income.createdAt).map((income) => {
                                 return (
                                     <TableRow key={income.id}>
                                         <TableCell>
