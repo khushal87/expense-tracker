@@ -33,7 +33,7 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
       (transaction) => transaction.source.type === TransactionType.investment
     )
   );
-  const [] = useState<TransactionDataType[]>(
+  const [receivables, setReceivables] = useState<TransactionDataType[]>(
     props.transactions.filter(
       (transaction) => transaction.source.type === TransactionType.receivable
     )
@@ -60,6 +60,12 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
       data.filter(
         (transaction: TransactionDataType) =>
           transaction.source.type === TransactionType.investment
+      )
+    );
+    setReceivables(
+      data.filter(
+        (transaction: TransactionDataType) =>
+          transaction.source.type === TransactionType.receivable
       )
     );
   };
@@ -129,8 +135,8 @@ export default function Home(props: { transactions: TransactionDataType[] }) {
               </Grid>
               <Grid item xs={12} lg={4} md={6}>
                 <ReceivableTable
-                  receivables={investments}
-                  setReceivables={setInvestments}
+                  receivables={receivables}
+                  setReceivables={setReceivables}
                 />
               </Grid>
             </Grid>
