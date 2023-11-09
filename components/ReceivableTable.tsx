@@ -1,6 +1,7 @@
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
+import Checkbox from "@mui/material/Checkbox";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,32 +15,32 @@ import dayjs from "dayjs";
 import { TransactionDataType, TransactionType } from "@/types";
 import { CardContent, CardHeader, Paper } from "@mui/material";
 
-type InvestmentTableType = {
-  investments: TransactionDataType[];
-  setInvestments: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
+type ReceivableTableType = {
+  receivables: TransactionDataType[];
+  setReceivables: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
 };
 
-export const InvestmentTable = ({
-  investments,
-  setInvestments,
-}: InvestmentTableType) => {
+export const ReceivableTable = ({
+  receivables,
+  setReceivables,
+}: ReceivableTableType) => {
   const [
-    isCreateInvestmentSourceModalVisible,
-    setIsCreateInvestmentSourceModalVisible,
+    isCreateReceivableSourceModalVisible,
+    setIsCreateReceivableSourceModalVisible,
   ] = useState<boolean>(false);
-  const [isAddInvestmentModalVisible, setIsAddInvestmentModalVisible] =
+  const [isAddReceivableModalVisible, setIsAddReceivableModalVisible] =
     useState<boolean>(false);
 
-  const addInvestment = (data: TransactionDataType) => {
-    setInvestments((prevInvestments) => [...prevInvestments, data]);
+  const addReceivable = (data: TransactionDataType) => {
+    setReceivables((prevReceivable) => [...prevReceivable, data]);
   };
 
   return (
     <Card>
       <CardHeader
-        title={TransactionType.investment}
-        subheader={`Total - ${investments.reduce(
-          (acc, investment) => acc + investment.amount,
+        title={TransactionType.receivable}
+        subheader={`Total - ${receivables.reduce(
+          (acc, receivable) => acc + receivable.amount,
           0
         )}`}
         subheaderTypographyProps={{
@@ -59,17 +60,21 @@ export const InvestmentTable = ({
                 <TableCell>Source</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell align="right">Amount(₹)</TableCell>
+                <TableCell>Paid</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {investments.map((investment) => {
+              {receivables.map((receivable) => {
                 return (
-                  <TableRow key={investment.id}>
-                    <TableCell>{investment.source.name}</TableCell>
+                  <TableRow key={receivable.id}>
+                    <TableCell>{receivable.source.name}</TableCell>
                     <TableCell>
-                      {dayjs(investment.createdAt).format("DD-MM-YYYY")}
+                      {dayjs(receivable.createdAt).format("DD-MM-YYYY")}
                     </TableCell>
-                    <TableCell align="right">{investment.amount}</TableCell>
+                    <TableCell align="right">{receivable.amount}</TableCell>
+                    <TableCell>
+                      <Checkbox />
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -78,23 +83,23 @@ export const InvestmentTable = ({
         </TableContainer>
       </CardContent>
       <CardActions>
-        <Button onClick={() => setIsCreateInvestmentSourceModalVisible(true)}>
+        <Button onClick={() => setIsCreateReceivableSourceModalVisible(true)}>
           Create Source
         </Button>
-        <Button onClick={() => setIsAddInvestmentModalVisible(true)}>
-          Add Investment
+        <Button onClick={() => setIsAddReceivableModalVisible(true)}>
+          Add Receivable
         </Button>
       </CardActions>
       <CreateSourceModal
-        source={TransactionType.investment}
-        isCreateSourceModalVisible={isCreateInvestmentSourceModalVisible}
-        setIsCreateSourceModalVisible={setIsCreateInvestmentSourceModalVisible}
+        source={TransactionType.receivable}
+        isCreateSourceModalVisible={isCreateReceivableSourceModalVisible}
+        setIsCreateSourceModalVisible={setIsCreateReceivableSourceModalVisible}
       />
       <AddTransactionModal
-        source={TransactionType.investment}
-        addTransaction={addInvestment}
-        isAddSourceModalVisible={isAddInvestmentModalVisible}
-        setIsAddSourceModalVisible={setIsAddInvestmentModalVisible}
+        source={TransactionType.receivable}
+        addTransaction={addReceivable}
+        isAddSourceModalVisible={isAddReceivableModalVisible}
+        setIsAddSourceModalVisible={setIsAddReceivableModalVisible}
       />
     </Card>
   );

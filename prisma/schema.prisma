@@ -23,4 +23,5 @@ model Transaction {
   createdAt DateTime @default(now())
   source    Source   @relation(fields: [sourceId], references: [id])
   amount    Int
+  received  Boolean  @default(false)
 }

@@ -7,20 +7,20 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useState } from "react";
-import { CreateSourceModal } from "./CreateSourceModal";
-import { AddTransactionModal } from "./AddTransactionModal";
+import {useState} from "react";
+import {CreateSourceModal} from "./CreateSourceModal";
+import {AddTransactionModal} from "./AddTransactionModal";
 import dayjs from "dayjs";
-import { TransactionDataType, TransactionType } from "@/types";
-import { CardContent, CardHeader, Paper } from "@mui/material";
+import {TransactionDataType, TransactionType} from "@/types";
+import {CardContent, CardHeader, Paper} from "@mui/material";
 
 type IncomeTableType = {
     incomes: TransactionDataType[];
     setIncomes: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
 };
 
-export const IncomeTable = ({ incomes, setIncomes }: IncomeTableType) => {
-    const [isCreatePayorModalVisible, setIsCreatePayorModalVisible] =
+export const IncomeTable = ({incomes, setIncomes}: IncomeTableType) => {
+    const [isCreatePayerModalVisible, setIsCreatePayerModalVisible] =
         useState<boolean>(false);
     const [isAddIncomeModalVisible, setIsAddIncomeModalVisible] =
         useState<boolean>(false);
@@ -43,10 +43,10 @@ export const IncomeTable = ({ incomes, setIncomes }: IncomeTableType) => {
                     },
                 }}
             />
-            <CardContent style={{ padding: 0 }}>
+            <CardContent style={{padding: 0}}>
                 <TableContainer
                     component={Paper}
-                    sx={{ maxHeight: 320, overflowY: "scroll" }}
+                    sx={{maxHeight: 320, overflowY: "scroll"}}
                 >
                     <Table>
                         <TableHead>
@@ -57,7 +57,7 @@ export const IncomeTable = ({ incomes, setIncomes }: IncomeTableType) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {incomes.filter(income=> income.createdAt).map((income) => {
+                            {incomes.filter(income => income.createdAt).map((income) => {
                                 return (
                                     <TableRow key={income.id}>
                                         <TableCell>
@@ -79,8 +79,8 @@ export const IncomeTable = ({ incomes, setIncomes }: IncomeTableType) => {
                 </TableContainer>
             </CardContent>
             <CardActions>
-                <Button onClick={() => setIsCreatePayorModalVisible(true)}>
-                    Create Payor
+                <Button onClick={() => setIsCreatePayerModalVisible(true)}>
+                    Create Payer
                 </Button>
                 <Button onClick={() => setIsAddIncomeModalVisible(true)}>
                     Add Income
@@ -88,8 +88,8 @@ export const IncomeTable = ({ incomes, setIncomes }: IncomeTableType) => {
             </CardActions>
             <CreateSourceModal
                 source={TransactionType.income}
-                isCreateSourceModalVisible={isCreatePayorModalVisible}
-                setIsCreateSourceModalVisible={setIsCreatePayorModalVisible}
+                isCreateSourceModalVisible={isCreatePayerModalVisible}
+                setIsCreateSourceModalVisible={setIsCreatePayerModalVisible}
             />
             <AddTransactionModal
                 source={TransactionType.income}
