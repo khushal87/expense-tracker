@@ -7,7 +7,7 @@ const createSource = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = req.body;
   try {
     const result = await prisma.source.create({
-      data: data,
+      data,
     });
     res.status(200).json(result);
   } catch (err) {

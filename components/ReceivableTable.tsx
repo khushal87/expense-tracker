@@ -14,15 +14,22 @@ import { AddTransactionModal } from "./AddTransactionModal";
 import dayjs from "dayjs";
 import { TransactionDataType, TransactionType } from "@/types";
 import { CardContent, CardHeader, Paper } from "@mui/material";
+import { Source, User } from "@prisma/client";
 
 type ReceivableTableType = {
+  addSource: (source: Source) => void;
   receivables: TransactionDataType[];
   setReceivables: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
+  sources: Source[];
+  user?: User;
 };
 
 export const ReceivableTable = ({
+  addSource,
   receivables,
   setReceivables,
+  sources,
+  user,
 }: ReceivableTableType) => {
   const [
     isCreateReceivableSourceModalVisible,
@@ -91,15 +98,21 @@ export const ReceivableTable = ({
         </Button>
       </CardActions>
       <CreateSourceModal
+        addSource={addSource}
         source={TransactionType.receivable}
         isCreateSourceModalVisible={isCreateReceivableSourceModalVisible}
         setIsCreateSourceModalVisible={setIsCreateReceivableSourceModalVisible}
+        user={user}
       />
       <AddTransactionModal
         source={TransactionType.receivable}
         addTransaction={addReceivable}
         isAddSourceModalVisible={isAddReceivableModalVisible}
         setIsAddSourceModalVisible={setIsAddReceivableModalVisible}
+        sources={sources.filter(
+          (source) => source.type === TransactionType.receivable
+        )}
+        user={user}
       />
     </Card>
   );

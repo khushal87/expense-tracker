@@ -17,8 +17,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { Source } from "@prisma/client";
+import { useState } from "react";
+import { Source, User } from "@prisma/client";
 import { TransactionType, TransactionDataType } from "@/types";
 import axios from "axios";
 
@@ -27,6 +27,8 @@ type AddTransactionModalType = {
   isAddSourceModalVisible: boolean;
   setIsAddSourceModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   addTransaction: (data: TransactionDataType) => void;
+  sources: Source[];
+  user?: User;
 };
 
 export const AddTransactionModal = ({
@@ -34,8 +36,9 @@ export const AddTransactionModal = ({
   isAddSourceModalVisible,
   setIsAddSourceModalVisible,
   addTransaction,
+  sources,
+  user,
 }: AddTransactionModalType) => {
-  const [sources, setSources] = useState<Source[]>([]);
   const [selectedSource, setSelectedSource] = useState<Source | null>(null);
   const [transactionDate, setTransactionDate] = useState<Date | undefined>(
     undefined
@@ -47,11 +50,12 @@ export const AddTransactionModal = ({
   const createTransaction = async () => {
     try {
       const response = await axios.post(
-        `${process.env.API_URL}/api/transaction/create`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/transaction/create`,
         {
           sourceId: selectedSource?.id,
           amount,
           createdAt: transactionDate,
+          userId: user?.id,
         }
       );
       if (response.status === 200) {
@@ -68,19 +72,6 @@ export const AddTransactionModal = ({
 
   const cardHeaderTitle = `Add ${source}`;
   const cardHeaderSubHeader = `Add your ${source} for a specific date of the month.`;
-
-  useEffect(() => {
-    const getSourcesByType = async () => {
-      const response = await axios.get(
-        `${process.env.API_URL}/api/source/get/${source}`
-      );
-      const data = await response.data;
-      setSources(data);
-    };
-    if (isAddSourceModalVisible) {
-      getSourcesByType();
-    }
-  }, [source, isAddSourceModalVisible]);
 
   return (
     <>

@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+To get started with the project, firsly setup your environment variables.
+
+```
+DATABASE_URL=<YOUR_DATABASE_URL_HERE>
+GOOGLE_ID=<YOUR_GOOGLE_OAUTH_CLIENT_ID_HERE>
+GOOGLE_SECRET=<YOUR_GOOGLE_OAUTH_CLIENT_SECRET_HERE>
+NEXT_PUBLIC_API_URL=<YOUR_API_URL_HERE>
+NEXT_PUBLIC_DEVELOPMENT_URL=<YOUR_DEVELOPMENT_URL_HERE>
+```
+
 First, run the development server:
 
 ```bash

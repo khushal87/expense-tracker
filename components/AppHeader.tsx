@@ -13,6 +13,7 @@ import { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CloseIcon from "@mui/icons-material/Close";
 import { CardActions } from "@mui/material";
+import { signOut } from "next-auth/react";
 
 type AppHeaderType = {
   onMonthChangeHandler: (month: number, year: number) => Promise<void>;
@@ -33,6 +34,16 @@ export const AppHeader = ({ onMonthChangeHandler }: AppHeaderType) => {
         </Typography>
         <Button color="inherit" onClick={() => setIsMonthModalVisible(true)}>
           {month + "/" + year}
+        </Button>
+        <Button
+          color="inherit"
+          onClick={() =>
+            signOut({
+              callbackUrl: `${process.env.NEXT_PUBLIC_DEVELOPMENT_URL}/auth/signin`,
+            })
+          }
+        >
+          Logout
         </Button>
       </Toolbar>
       <Modal

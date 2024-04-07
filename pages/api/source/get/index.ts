@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 const getSources = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const result = await prisma.source.findMany();
+    const data = req.body;
+
+    const result = await prisma.source.findMany({
+      where: { userId: data.userId },
+    });
     res.status(200).json(result);
   } catch (err) {
     console.log(err);

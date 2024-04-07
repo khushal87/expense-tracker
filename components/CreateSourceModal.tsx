@@ -11,18 +11,23 @@ import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { TransactionType } from "@/types";
+import { Source, User } from "@prisma/client";
 import axios from "axios";
 
 type CreateSourceModalType = {
+  addSource: (source: Source) => void;
   source: TransactionType;
   isCreateSourceModalVisible: boolean;
   setIsCreateSourceModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  user?: User;
 };
 
 export const CreateSourceModal = ({
+  addSource,
   source,
   isCreateSourceModalVisible,
   setIsCreateSourceModalVisible,
+  user,
 }: CreateSourceModalType) => {
   const [isSourceCreated, setIsSourceCreated] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
@@ -45,17 +50,20 @@ export const CreateSourceModal = ({
 
   const createSource = async () => {
     try {
+      if (!user) return;
       const response = await axios.post(
-        `${process.env.API_URL}/api/source/create`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/source/create`,
         {
           name,
           type: source,
+          userId: user.id,
         }
       );
       if (response.status === 200) {
         setIsCreateSourceModalVisible(false);
         setIsSourceCreated(true);
         setName("");
+        addSource(response.data);
       }
     } catch (error) {
       console.log(error);

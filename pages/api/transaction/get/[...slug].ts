@@ -12,14 +12,16 @@ const getTransactionsByType = async (
     const { slug } = req.query;
     const month = slug?.[0];
     const year = slug?.[1];
-    const endDate = dayjs(`${year}-${month}`).endOf("month").toISOString();
+    const userId = slug?.[2];
     const startDate = dayjs(`${year}-${month}`).startOf("month").toISOString();
+    const endDate = dayjs(`${year}-${month}`).endOf("month").toISOString();
     const result = await prisma.transaction.findMany({
       where: {
         createdAt: {
-          lte: endDate,
           gte: startDate,
+          lte: endDate,
         },
+        userId,
       },
       include: {
         source: true,

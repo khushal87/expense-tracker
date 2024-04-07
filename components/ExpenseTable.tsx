@@ -11,20 +11,24 @@ import { CreateSourceModal } from "./CreateSourceModal";
 import { AddTransactionModal } from "./AddTransactionModal";
 import { TransactionDataType, TransactionType } from "@/types";
 import dayjs from "dayjs";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Paper,
-  TableFooter,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, Paper } from "@mui/material";
+import { Source, User } from "@prisma/client";
 
 type ExpenseTableType = {
+  addSource: (source: Source) => void;
   expenses: TransactionDataType[];
   setExpenses: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
+  sources: Source[];
+  user?: User;
 };
 
-export const ExpenseTable = ({ expenses, setExpenses }: ExpenseTableType) => {
+export const ExpenseTable = ({
+  addSource,
+  expenses,
+  setExpenses,
+  sources,
+  user,
+}: ExpenseTableType) => {
   const [isCreatePayeeModalVisible, setIsCreatePayeeModalVisible] =
     useState<boolean>(false);
   const [isAddExpenseModalVisible, setIsAddExpenseModalVisible] =
@@ -87,15 +91,21 @@ export const ExpenseTable = ({ expenses, setExpenses }: ExpenseTableType) => {
         </Button>
       </CardActions>
       <CreateSourceModal
+        addSource={addSource}
         source={TransactionType.expense}
         isCreateSourceModalVisible={isCreatePayeeModalVisible}
         setIsCreateSourceModalVisible={setIsCreatePayeeModalVisible}
+        user={user}
       />
       <AddTransactionModal
         source={TransactionType.expense}
         addTransaction={addExpense}
         isAddSourceModalVisible={isAddExpenseModalVisible}
         setIsAddSourceModalVisible={setIsAddExpenseModalVisible}
+        sources={sources.filter(
+          (source) => source.type === TransactionType.expense
+        )}
+        user={user}
       />
     </Card>
   );

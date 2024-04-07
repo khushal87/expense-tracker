@@ -13,15 +13,22 @@ import { AddTransactionModal } from "./AddTransactionModal";
 import dayjs from "dayjs";
 import { TransactionDataType, TransactionType } from "@/types";
 import { CardContent, CardHeader, Paper } from "@mui/material";
+import { Source, User } from "@prisma/client";
 
 type InvestmentTableType = {
+  addSource: (source: Source) => void;
   investments: TransactionDataType[];
   setInvestments: React.Dispatch<React.SetStateAction<TransactionDataType[]>>;
+  sources: Source[];
+  user?: User;
 };
 
 export const InvestmentTable = ({
+  addSource,
   investments,
   setInvestments,
+  sources,
+  user,
 }: InvestmentTableType) => {
   const [
     isCreateInvestmentSourceModalVisible,
@@ -86,15 +93,21 @@ export const InvestmentTable = ({
         </Button>
       </CardActions>
       <CreateSourceModal
+        addSource={addSource}
         source={TransactionType.investment}
         isCreateSourceModalVisible={isCreateInvestmentSourceModalVisible}
         setIsCreateSourceModalVisible={setIsCreateInvestmentSourceModalVisible}
+        user={user}
       />
       <AddTransactionModal
         source={TransactionType.investment}
         addTransaction={addInvestment}
         isAddSourceModalVisible={isAddInvestmentModalVisible}
         setIsAddSourceModalVisible={setIsAddInvestmentModalVisible}
+        sources={sources.filter(
+          (source) => source.type === TransactionType.investment
+        )}
+        user={user}
       />
     </Card>
   );
